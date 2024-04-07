@@ -60,6 +60,29 @@ func TickPriceToToken1Balance(decimals uint8, tickPriceLower, tickPriceUpper dec
 	return balance
 }
 
+func TickPriceToToken0BalanceInRange(decimals uint8, tickPriceUpper decimal.Decimal, liquidity *big.Int, sqrtPrice decimal.Decimal) decimal.Decimal {
+	_tickUpper := tickPriceUpper.BigFloat()
+	sqrtUpper := _tickUpper.Sqrt(_tickUpper)
+	bias := SafeSubFloat(sqrtUpper, sqrtPrice.BigFloat())
+	accum := new(big.Float).Mul(sqrtPrice.BigFloat(), sqrtUpper)
+	_liquidity := new(big.Float).SetInt(liquidity)
+	_balance := new(big.Float).Mul(_liquidity, new(big.Float).Quo(bias, accum))
+	_balanceF64, _ := _balance.Float64()
+	balance := decimal.NewFromFloat(_balanceF64).Shift(-int32(decimals))
+	return balance
+}
+
+func TickPriceToToken1BalanceInRange(decimals uint8, tickPriceLower decimal.Decimal, liquidity *big.Int, sqrtPrice decimal.Decimal) decimal.Decimal {
+	_tickLower := tickPriceLower.BigFloat()
+	sqrtLower := _tickLower.Sqrt(_tickLower)
+	_liquidity := new(big.Float).SetInt(liquidity)
+	bias := SafeSubFloat(sqrtPrice.BigFloat(), sqrtLower)
+	_balance := new(big.Float).Mul(_liquidity, bias)
+	_balanceF64, _ := _balance.Float64()
+	balance := decimal.NewFromFloat(_balanceF64).Shift(-int32(decimals))
+	return balance
+}
+
 func OutRangeFee(decimals uint8, feeOutsideToSub *big.Int, feeSub *big.Int, feeInside *big.Int, liquidity *big.Int) decimal.Decimal {
 	sub := SafeSubInt(feeOutsideToSub, feeSub)
 	sub = SafeSubInt(sub, feeInside)

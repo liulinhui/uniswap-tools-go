@@ -41,4 +41,5 @@ type PoolAggregated struct {
 	Slot0                *Slot0
 	TickLowerTicks       *Tick
 	TickUpperTicks       *Tick
+	SqrtPrice            *big.Int
 }
