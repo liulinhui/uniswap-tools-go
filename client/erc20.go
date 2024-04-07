@@ -73,7 +73,7 @@ func (c *Clients) AggregatedERC20Token(ctx context.Context, address common.Addre
 		return nil, err
 	}
 	if err != nil && strings.Contains(err.Error(), "would go over slice boundary") {
-		symbol = string(results[0].ReturnData)
+		symbol = strings.Trim(string(results[0].ReturnData), string(rune(0)))
 	}
 	var totalSupply *big.Int
 	err = c.contractAbis.ERC20.UnpackIntoInterface(&totalSupply, constants.TotalSupplyMethod, results[1].ReturnData)
@@ -85,13 +85,12 @@ func (c *Clients) AggregatedERC20Token(ctx context.Context, address common.Addre
 	if err != nil {
 		return nil, err
 	}
-	token := &model.ERC20Token{
+
+	return &model.ERC20Token{
 		ContractAddress: address,
 		Decimals:        decimals,
 		Symbol:          symbol,
-	}
-	token.UpdateSymbol()
-	return token, nil
+	}, nil
 }
 
 func (c *Clients) ERC20Symbol(ctx context.Context, address common.Address) (string, error) {
