@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"math/big"
+	"strings"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/hexutil"
@@ -68,8 +69,11 @@ func (c *Clients) AggregatedERC20Token(ctx context.Context, address common.Addre
 
 	var symbol string
 	err = c.contractAbis.ERC20.UnpackIntoInterface(&symbol, constants.SymbolMethod, results[0].ReturnData)
-	if err != nil {
+	if err != nil && !strings.Contains(err.Error(), "would go over slice boundary") {
 		return nil, err
+	}
+	if err != nil && strings.Contains(err.Error(), "would go over slice boundary") {
+		symbol = strings.Trim(string(results[0].ReturnData), string(rune(0)))
 	}
 	var totalSupply *big.Int
 	err = c.contractAbis.ERC20.UnpackIntoInterface(&totalSupply, constants.TotalSupplyMethod, results[1].ReturnData)
