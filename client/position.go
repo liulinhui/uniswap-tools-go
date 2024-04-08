@@ -296,6 +296,7 @@ func (c *Clients) AggregatedPosition(ctx context.Context, tokenIDs []*big.Int) (
 
 				Token0Price: tokenPrice[token0Addr],
 				Token1Price: tokenPrice[token1Addr],
+				Liquidity:   lo.ToPtr(decimal.NewFromBigInt(position.Liquidity, 0)),
 			})
 			mu.Unlock()
 
