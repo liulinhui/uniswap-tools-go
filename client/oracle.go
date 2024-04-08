@@ -230,8 +230,11 @@ func (c *Clients) AggregatedTokenPriceInUSD(ctx context.Context, tokenAddresses 
 
 		usdPerETH = usdPerETH.Shift(-int32(c.USDDecimals()))
 		tokenPerETH = tokenPerETH.Shift(-int32(decimals))
-
-		prices = append(prices, lo.ToPtr[decimal.Decimal](usdPerETH.Div(tokenPerETH)))
+		if tokenPerETH.Cmp(decimal.Zero) < 1 {
+			prices = append(prices, lo.ToPtr[decimal.Decimal](decimal.Zero))
+		} else {
+			prices = append(prices, lo.ToPtr[decimal.Decimal](usdPerETH.Div(tokenPerETH)))
+		}
 	}
 	return prices, nil
 }
