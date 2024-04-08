@@ -179,7 +179,7 @@ func (c *Clients) AggregatedPosition(ctx context.Context, tokenIDs []*big.Int) (
 			priceRangeInToken1_1 := utils.Invert(priceRangeInToken0_1)
 
 			currentTick := decimal.NewFromBigInt(poolInfo.Slot0.Tick, 0)
-			sqrtPrice := decimal.NewFromBigInt(poolInfo.SqrtPrice, 0)
+			sqrtPrice := poolInfo.SqrtPrice
 			tickUpper := decimal.NewFromBigInt(_position.TickUpper, 0)
 			tickLower := decimal.NewFromBigInt(_position.TickLower, 0)
 

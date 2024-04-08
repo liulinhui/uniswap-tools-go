@@ -271,6 +271,6 @@ func (c *Clients) Pool(ctx context.Context, poolAddress common.Address, tickLowe
 		TickLowerTicks:       lo.ToPtr[model.Tick](_tickLower),
 		TickUpperTicks:       lo.ToPtr[model.Tick](_tickUpper),
 		Liquidity:            _liquidity,
-		SqrtPrice:            decimal.NewFromBigInt(lo.ToPtr[model.Slot0](_slot0).SqrtPriceX96, 0).Div(decimal.NewFromInt(2).Pow(decimal.NewFromInt(96))).BigInt(),
+		SqrtPrice:            decimal.NewFromBigInt(lo.ToPtr[model.Slot0](_slot0).SqrtPriceX96, 0).Div(decimal.NewFromInt(2).Pow(decimal.NewFromInt(96))),
 	}, nil
 }

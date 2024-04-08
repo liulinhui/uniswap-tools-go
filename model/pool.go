@@ -1,6 +1,7 @@
 package model
 
 import (
+	"github.com/shopspring/decimal"
 	"math/big"
 
 	"github.com/ethereum/go-ethereum/common"
@@ -41,5 +42,5 @@ type PoolAggregated struct {
 	Slot0                *Slot0
 	TickLowerTicks       *Tick
 	TickUpperTicks       *Tick
-	SqrtPrice            *big.Int
+	SqrtPrice            decimal.Decimal
 }
