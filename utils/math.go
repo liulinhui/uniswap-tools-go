@@ -70,8 +70,7 @@ func TickPriceToToken0BalanceInRange(decimals uint8, tickPriceUpper decimal.Deci
 	accum := new(big.Float).Mul(sqrtPrice.BigFloat(), sqrtUpper)
 	_liquidity := new(big.Float).SetInt(liquidity)
 	_balance := new(big.Float).Mul(_liquidity, new(big.Float).Quo(bias, accum))
-	_balanceF64, _ := _balance.Float64()
-	balance := decimal.NewFromFloat(_balanceF64).Shift(-int32(decimals))
+	balance := decimal.RequireFromString(_balance.String()).Shift(-int32(decimals))
 	return balance
 }
 
