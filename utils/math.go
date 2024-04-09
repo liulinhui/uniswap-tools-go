@@ -61,6 +61,9 @@ func TickPriceToToken1Balance(decimals uint8, tickPriceLower, tickPriceUpper dec
 }
 
 func TickPriceToToken0BalanceInRange(decimals uint8, tickPriceUpper decimal.Decimal, liquidity *big.Int, sqrtPrice decimal.Decimal) decimal.Decimal {
+	if sqrtPrice.Equals(decimal.Zero) {
+		return decimal.Zero
+	}
 	_tickUpper := tickPriceUpper.BigFloat()
 	sqrtUpper := _tickUpper.Sqrt(_tickUpper)
 	bias := SafeSubFloat(sqrtUpper, sqrtPrice.BigFloat())
@@ -73,13 +76,15 @@ func TickPriceToToken0BalanceInRange(decimals uint8, tickPriceUpper decimal.Deci
 }
 
 func TickPriceToToken1BalanceInRange(decimals uint8, tickPriceLower decimal.Decimal, liquidity *big.Int, sqrtPrice decimal.Decimal) decimal.Decimal {
+	if sqrtPrice.Equals(decimal.Zero) {
+		return decimal.Zero
+	}
 	_tickLower := tickPriceLower.BigFloat()
 	sqrtLower := _tickLower.Sqrt(_tickLower)
 	_liquidity := new(big.Float).SetInt(liquidity)
 	bias := SafeSubFloat(sqrtPrice.BigFloat(), sqrtLower)
 	_balance := new(big.Float).Mul(_liquidity, bias)
-	_balanceF64, _ := _balance.Float64()
-	balance := decimal.NewFromFloat(_balanceF64).Shift(-int32(decimals))
+	balance := decimal.RequireFromString(_balance.String()).Shift(-int32(decimals))
 	return balance
 }
 

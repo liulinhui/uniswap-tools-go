@@ -60,7 +60,7 @@ func TestOnAccountHoldingsIncludeMaker(t *testing.T) {
 	ctx := context.Background()
 
 	results, err := clis.WithNetwork(constants.EthereumNetwork).AggregatedPosition(ctx, []*big.Int{
-		new(big.Int).SetInt64(2),
+		new(big.Int).SetInt64(115638),
 	})
 	assert.NoError(t, err)
 	for _, item := range results {
@@ -69,5 +69,6 @@ func TestOnAccountHoldingsIncludeMaker(t *testing.T) {
 		t.Log("rewards0amount:", item.FeeRewards0Amount.String())
 		t.Log("rewards1amount:", item.FeeRewards1Amount.String())
 		t.Log("position name:", item.Name)
+		t.Log("value usd", item.TotalValueUSD)
 	}
 }
