@@ -60,7 +60,7 @@ func TestOnAccountHoldingsIncludeMaker(t *testing.T) {
 	ctx := context.Background()
 
 	results, err := clis.WithNetwork(constants.EthereumNetwork).AggregatedPosition(ctx, []*big.Int{
-		new(big.Int).SetInt64(324342),
+		new(big.Int).SetInt64(275290),
 	})
 	assert.NoError(t, err)
 	for _, item := range results {

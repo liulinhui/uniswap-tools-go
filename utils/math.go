@@ -61,7 +61,7 @@ func TickPriceToToken1Balance(decimals uint8, tickPriceLower, tickPriceUpper dec
 }
 
 func TickPriceToToken0BalanceInRange(decimals uint8, tickPriceUpper decimal.Decimal, liquidity *big.Int, sqrtPrice decimal.Decimal) decimal.Decimal {
-	if sqrtPrice.Equals(decimal.Zero) {
+	if sqrtPrice.Equals(decimal.Zero) || tickPriceUpper.Equals(decimal.Zero) {
 		return decimal.Zero
 	}
 	_tickUpper := tickPriceUpper.BigFloat()
