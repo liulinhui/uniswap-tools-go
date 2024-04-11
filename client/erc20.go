@@ -19,7 +19,7 @@ func (c *Clients) AggregatedERC20Token(ctx context.Context, address common.Addre
 	var err error
 	symbolCall := multicall3.Multicall3Call3{
 		Target:       address,
-		AllowFailure: false,
+		AllowFailure: true,
 	}
 	symbolCall.CallData, err = c.contractAbis.ERC20.Pack(constants.SymbolMethod)
 	if err != nil {
@@ -28,19 +28,19 @@ func (c *Clients) AggregatedERC20Token(ctx context.Context, address common.Addre
 
 	calls = append(calls, symbolCall)
 
-	totalSupplyCall := multicall3.Multicall3Call3{
-		Target:       address,
-		AllowFailure: false,
-	}
-	totalSupplyCall.CallData, err = c.contractAbis.ERC20.Pack(constants.TotalSupplyMethod)
-	if err != nil {
-		return nil, err
-	}
-	calls = append(calls, totalSupplyCall)
+	//totalSupplyCall := multicall3.Multicall3Call3{
+	//	Target:       address,
+	//	AllowFailure: true,
+	//}
+	//totalSupplyCall.CallData, err = c.contractAbis.ERC20.Pack(constants.TotalSupplyMethod)
+	//if err != nil {
+	//	return nil, err
+	//}
+	//calls = append(calls, totalSupplyCall)
 
 	decimalsCall := multicall3.Multicall3Call3{
 		Target:       address,
-		AllowFailure: false,
+		AllowFailure: true,
 	}
 	decimalsCall.CallData, err = c.contractAbis.ERC20.Pack(constants.DecimalsMethod)
 	if err != nil {
@@ -53,14 +53,7 @@ func (c *Clients) AggregatedERC20Token(ctx context.Context, address common.Addre
 	if err != nil {
 		return nil, err
 	}
-
-	for i, res := range results {
-		if !res.Success {
-			return nil, fmt.Errorf("failed to call erc20  %d th method, contract address: %s", i, address.String())
-		}
-	}
-
-	if len(results) != 3 {
+	if len(results) != 2 {
 		return nil, fmt.Errorf("failed to match the result, len of result: %d", len(results))
 	}
 
@@ -75,13 +68,8 @@ func (c *Clients) AggregatedERC20Token(ctx context.Context, address common.Addre
 	if err != nil && strings.Contains(err.Error(), "would go over slice boundary") {
 		symbol = strings.Trim(string(results[0].ReturnData), string(rune(0)))
 	}
-	var totalSupply *big.Int
-	err = c.contractAbis.ERC20.UnpackIntoInterface(&totalSupply, constants.TotalSupplyMethod, results[1].ReturnData)
-	if err != nil {
-		return nil, err
-	}
 	var decimals uint8
-	err = c.contractAbis.ERC20.UnpackIntoInterface(&decimals, constants.DecimalsMethod, results[2].ReturnData)
+	err = c.contractAbis.ERC20.UnpackIntoInterface(&decimals, constants.DecimalsMethod, results[1].ReturnData)
 	if err != nil {
 		return nil, err
 	}
